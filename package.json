@@ -1,0 +1,12 @@
+{
+  "name": "connect_memo",
+  "version": "1.0.0",
+  "main": "main.js",
+  "scripts": {
+    "start": "node main.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "connect memos is a project to connect people momes along with thier friends"
+}
