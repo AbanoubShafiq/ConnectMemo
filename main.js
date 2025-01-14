@@ -6,7 +6,7 @@ const {MONGO_PROD_URI, App_Name} = App_Config
 const express = require("express");
 const morgan = require("morgan");
 const path = require("path");
-
+const {uploadServices} = require("./services/upload.services")
 
 // console.log(app_config);
 
@@ -32,21 +32,35 @@ const fileUpload = require("express-fileupload");
                 tempFileDir : path.join(__dirname, '/tmp/'),
                 preserveExtension: true
             }))
-            app.post("/upload", (req, res, next) => {
+            app.post("/upload", async(req, res, next) => {
                 //res.send(req.files.iti.name);
                 if (!req.files || Object.keys(req.files).length === 0) {
                     return res.status(400).send("No files were uploaded.");
                 }
 
                 const uploadedFile = req.files.iti;
-                const uploadPath = path.join(__dirname, "/tmp/", uploadedFile.name);
-                uploadedFile.mv(uploadPath, (err) => {
-                    if (err) {
-                        console.error(err);
-                        return res.status(500).send(err);
-                    }
-                    res.send("File uploaded successfully!");
-                });
+                const uploadPayload = [];
+                if (Array.isArray(uploadedFile))
+                {
+                    res.send("unsupported feature , not yet");
+                }else {
+                    
+                    const uploadPath = path.join(__dirname, "/tmp/", uploadedFile.name);
+                    uploadedFile.mv(uploadPath, (err) => {
+                        if (err) {
+                            console.error(err);
+                            return res.status(500).send(err);
+                        }
+                        res.send("File uploaded successfully!");
+                    });
+                    uploadPayload.push({
+                        src: uploadPath,
+                        fileName: uploadPath.name 
+                    })
+                }
+                const response = await uploadServices.upload({files: uploadPayload});
+                res.send(response);
+
 
             })
 
