@@ -44,27 +44,29 @@ async function upload({ files }) {
     }
 }
 
-// async function download({fileId}) {
-//     try{
-//         const fileDetails = imagekitInstance.getFileDetails(fileId);
-//         const fileURL = fileDetails.url;
-//         return ({Message: "Download URL Generated Successfully !", fileURL})
 
-//     }catch(error)
-//     {
-//         console.log({
-//             Info: "Error While Downloading",
-//             error,
-//             Message: error.Message
-//         })    
-//     }
-// }
+async function download({ fileId }) {
+    try {
+        const fileDetails = await imagekitInstance.getFileDetails(fileId);
+        const fileURL = fileDetails.url;
+        return { downloadFile: fileURL }; // Fixed typo
+    } catch (error) {
+        console.error({
+            Info: "Error While Downloading",
+            error,
+            Message: error.message 
+        });
+        throw new Error("Failed to download file. Please check the file ID."); // Throw error for caller
+    }
+}
+
+
 
 
 
 module.exports.uploadServices = {
     upload,
-    // download
+    download
 }
 
 

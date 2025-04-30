@@ -14,8 +14,15 @@ module.exports.getUsers = async () => {
         })
     }
 }
-module.exports.updateUser = async () => {
-    
+module.exports.updateUser = async (userId, updatedData) => {
+    try{
+        return await User.updateOne({user_id: userId},
+            {$set: updatedData}
+        )
+    }catch(error)
+    {
+        console.log(error.Message);
+    }
 }
 
 // delete user
@@ -37,19 +44,11 @@ module.exports.deleteUser = async (userId) =>{
 
 
 // createUser
-module.exports.createUser = async (
-    _first_name,
-    _last_name,
-    _email,
-    _password,
-) =>{
+module.exports.createUser = async (data) =>{
     try{
-        await User.insertMany ([{
-            first_name: _first_name,
-            last_name: _last_name,
-            email: _email,
-            password: _password
-        }])
+        const user = await User.create(data);
+        
+        return user
     }catch(error)
     {
         console.log({

@@ -48,13 +48,30 @@ module.exports = (() => {
         }
     })
 
+    router.get("/download", async (req, res) => {
+        try {
+            const id = req.query.id;
+    
+            if (!id) {
+                return res.status(400).send("No ID provided for download");
+            }
+    
+            const downloadURL = await uploadServices.download({ fileId: id });
+    
+            if (!downloadURL) {
+                return res.status(404).send("No image found with the provided ID");
+            }
+    
+            return res.status(200).send({ DownloadURL: downloadURL.downloadFile });
+        } catch (error) {
+            console.error("Error in /download route:", error.message);
+            return res.status(500).send("Internal Server Error. Please try again.");
+        }
+    });
+    
 
-    // router.get("/download", async (req, res, next) => {
-    //     if (!req.fileId)
-    //     {
-    //         return res.status(400).send("No Id To Download");
-    //     }
-    // })
+
+
     return router;
 })()
 
